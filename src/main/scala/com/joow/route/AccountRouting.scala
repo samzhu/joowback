@@ -55,7 +55,7 @@ object AccountRouting extends SimpleRoutingApp {
                 index into "joow/account" doc account
               }.await
               client.close()
-              val body: Map[Any, Any] = Map("id" -> resp.getId.toString)
+              val body: Map[Any, Any] = Map("_id" -> resp.getId.toString)
               val res = Response(RsHeader("0"), body)
               res
             }
@@ -104,7 +104,7 @@ object AccountRouting extends SimpleRoutingApp {
                   )
               }.await
               client.close()
-              val body: Map[Any, Any] = Map("id" -> resp.getId.toString)
+              val body: Map[Any, Any] = Map("_id" -> resp.getId.toString)
               val res = Response(RsHeader("0"), body)
               res
             }
@@ -152,17 +152,11 @@ object AccountRouting extends SimpleRoutingApp {
                 search in "joow" -> "account" query "nickname:"+nickname //fields "nickname"
               }.await
               client.close()
-              //Print.toJson(resp)
-              //resp
-              println("nickname="+nickname)
               val sh: SearchHits = resp.getHits
-              println("Hits=" + resp.getHits.getTotalHits)
-              println("nickname="+resp.getHits.getHits()(0).sourceAsMap.get("nickname").toString)
               val hits: ListBuffer[Any] = new ListBuffer()
               resp.getHits.getHits().foreach( u =>
                 hits += Map("_id" -> u.getId, "_score" -> u.getScore, "account" -> Account(u))
               )
-
               val body: Map[Any, Any] = Map("total" -> sh.getTotalHits, "max_score" -> sh.getMaxScore, "hits" -> hits)
               val res = Response(RsHeader("0"), body)
               res

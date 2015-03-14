@@ -24,8 +24,19 @@ object BackBoot extends App with SimpleRoutingApp {
         }
       }
     } ~
-      AccountRouting.route
-
+      AccountRouting.route ~ 
+//<<<<<<< Updated upstream
+	path("") {
+      compressResponse() {
+        getFromResource("web/index.html")
+      }
+    }~
+    pathPrefix("web") {
+      compressResponse() {
+        getFromResourceDirectory("web")
+      }
+    }
+//>>>>>>> Stashed changes
   }
 
 }

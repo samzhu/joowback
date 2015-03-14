@@ -1,0 +1,50 @@
+<html>
+<html ng-app="app">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title> JOOW </title>
+</head>
+
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+
+
+<script>
+var app = angular.module("app", []);
+    
+function user_registry($scope, $http) {
+    $scope.adduser = function(user) {
+        $http({method: 'POST', url: 'http://localhost:8080/account', data: user, headers: {'Content-Type': 'application/json'}}).success(function(gdata){
+            alert(JSON.stringify(gdata));
+        }).error(function (gdata) {
+            alert(gdata);
+        });
+    };
+};
+
+</script>
+  
+  
+<body>
+
+<div ng-controller="user_registry">
+<h3>註冊</h3>
+<form novalidate name="Registration" method="post" action="">
+<label class="control-label">Name</label>
+<input type="text" ng-model="user.nickname" class="form-control"/>
+<br/>
+<label class="control-label">Email</label>
+<input type="text" ng-model="user.email" class="form-control"/>
+<br/>
+<label class="control-label">Password</label>
+<input type="password" ng-model="user.passwd" class="form-control"/>
+<br/>
+<label class="control-label">createDate</label>
+<input type="text" ng-model="user.createDate" class="form-control"/>
+<br/>
+<button class="btn btn-primary" ng-disabled="Registration.$invalid || isUnchanged(user)" ng-click="adduser(user)">Registry</button>
+</form>
+</div>
+
+</body>
+
+</html>

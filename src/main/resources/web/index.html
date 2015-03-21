@@ -13,7 +13,7 @@ var app = angular.module("app", []);
     
 function user_registry($scope, $http) {
     $scope.adduser = function(user) {
-        $http({method: 'POST', url: 'http://localhost:8080/account', data: user, headers: {'Content-Type': 'application/json'}}).success(function(gdata){
+        $http({method: 'POST', url: 'http://localhost:8080/api/account', data: user, headers: {'Content-Type': 'application/json'}}).success(function(gdata){
             alert(JSON.stringify(gdata));
         }).error(function (gdata) {
             alert(gdata);

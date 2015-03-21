@@ -1,3 +1,5 @@
+import AssemblyKeys._
+
 name := "joowback"
 
 version := "1.0"

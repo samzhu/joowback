@@ -1,49 +1,18 @@
-<html>
+<!DOCTYPE html>
 <html ng-app="app">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=Big5" />
 <title> JOOW </title>
 </head>
 
-<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
-
-
-<script>
-var app = angular.module("app", []);
-    
-function user_registry($scope, $http) {
-    $scope.adduser = function(user) {
-        $http({method: 'POST', url: 'http://localhost:8080/api/account', data: user, headers: {'Content-Type': 'application/json'}}).success(function(gdata){
-            alert(JSON.stringify(gdata));
-        }).error(function (gdata) {
-            alert(gdata);
-        });
-    };
-};
-
-</script>
-  
+<script src= "http://localhost:8080/web/js/angular.min.js"></script>
+<script src= "http://localhost:8080/web/js/init.js"></script>  
   
 <body>
 
-<div ng-controller="user_registry">
-<h3>註冊</h3>
-<form novalidate name="Registration" method="post" action="">
-<label class="control-label">Name</label>
-<input type="text" ng-model="user.nickname" class="form-control"/>
-<br/>
-<label class="control-label">Email</label>
-<input type="text" ng-model="user.email" class="form-control"/>
-<br/>
-<label class="control-label">Password</label>
-<input type="password" ng-model="user.passwd" class="form-control"/>
-<br/>
-<label class="control-label">createDate</label>
-<input type="text" ng-model="user.createDate" class="form-control"/>
-<br/>
-<button class="btn btn-primary" ng-disabled="Registration.$invalid || isUnchanged(user)" ng-click="adduser(user)">Registry</button>
-</form>
-</div>
+<a href="http://localhost:8080/web/sign-in.html">註冊</a>
+<a href="http://localhost:8080/web/log-in.html">登入</a>
+<a href="http://localhost:8080/web/edit.html">發文</a>
 
 </body>
 

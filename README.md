@@ -1,2 +1,2 @@
 * [Account API](https://bitbucket.org/joow/joowback/src/25790612db0885f14e6e99f6f3ecd26937124044/doc/account.md?at=master)
-* [Auth API](https://bitbucket.org/joow/joowback/src/29ca8b4b5d5822baf2d70dd06beea617b79aa6b6/doc/auth.md?at=master)
+* [Auth API](https://bitbucket.org/joow/joowback/src/0d3d3fbff58cf654bb13d186731f3f76bc898767/doc/auth.md?at=master)

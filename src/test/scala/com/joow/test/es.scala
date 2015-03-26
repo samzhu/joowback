@@ -13,7 +13,11 @@ object es {
     val client = ElasticClient.remote("127.0.0.1", 9300)
     val resp = client.execute {
       //search in "joow/account" query "帥"
-      search in "joow" -> "account" query "帥" fields "nickname"
+      //search in "joow" / "account" query  { term("nickname", "小朱") }
+      //search in "joow/account" query("nickname", "小朱")
+
+      //search in "joow/account" query termQuery("nickname" -> "小朱")
+      search in "joow/account" query matchQuery("nickname", "小朱")
       //search in "joow/account" query nestedQuery("nickname").query(termQuery("account.nickname" -> "帥哥"))
 
       //search in "joow" -> "account" query "小" fields "nickname"
@@ -36,15 +40,15 @@ object es {
     println("size="+resp.getHits.getHits.size)
 
     //println(resp.getHits.getHits()(0))
-    resp.getHits.getHits().foreach( u =>
-      println(u.field("nickname"))
-    )
-    println(resp.getHits.getHits()(0).sourceAsMap.get("nickname").toString)
+    //resp.getHits.getHits().foreach( u =>
+    //  println(u.field("nickname"))
+    //)
+    //println(resp.getHits.getHits()(0).sourceAsMap.get("nickname").toString)
 
-    val acc = Account(resp.getHits.getHits()(0))
+    //val acc = Account(resp.getHits.getHits()(0))
     //println(acc.s);
 
-    println(acc.json);
+    //println(acc.json);
     //resp.getHits.getHits.foreach(u =>
       //println(u.fields().get("nickname").getValues)
     //)

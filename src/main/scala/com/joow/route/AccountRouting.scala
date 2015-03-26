@@ -5,10 +5,12 @@ import java.util
 import akka.actor.ActorSystem
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.joow.app.Json4sProtocol
 import com.joow.entity._
 import com.joow.utils.Print
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
+import org.apache.commons.codec.digest.DigestUtils
 import org.elasticsearch.action.search.SearchResponse
 import org.elasticsearch.search.{SearchHits, SearchHit}
 import org.elasticsearch.search.internal.InternalSearchHit
@@ -24,9 +26,7 @@ import org.json4s.jackson.JsonMethods._
 import scala.collection.mutable.ListBuffer
 
 
-object Json4sProtocol extends Json4sSupport {
-  implicit def json4sFormats: Formats = DefaultFormats
-}
+
 
 
 object AccountRouting extends SimpleRoutingApp {
@@ -50,9 +50,11 @@ object AccountRouting extends SimpleRoutingApp {
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
               val account = accountObj.extract[Account]
+              val saveaccount = new Account(account.email, DigestUtils.sha512Hex(account.passwd), account.nickname, account.createDate)
+              println("密碼:"+saveaccount.passwd)
               val client = ElasticClient.remote("127.0.0.1", 9300)
               val resp = client.execute {
-                index into "joow/account" doc account
+                index into "joow/account" doc saveaccount
               }.await
               client.close()
               val body: Map[Any, Any] = Map("_id" -> resp.getId.toString)
@@ -128,7 +130,7 @@ object AccountRouting extends SimpleRoutingApp {
             }.await
             client.close()
             val source = resp.getSource
-            val account = Account(source.get("email").toString, "", source.get("nickname").toString, "")
+            val account = Account(source.get("email").toString, "", source.get("nickname").toString, None)
             val body: Map[Any, Any] = Map("account" -> account)
             val res = Response(RsHeader("0"), body)
             res
@@ -149,7 +151,7 @@ object AccountRouting extends SimpleRoutingApp {
             complete {
               val client = ElasticClient.remote("127.0.0.1", 9300)
               val resp = client.execute {
-                search in "joow" -> "account" query "nickname:"+nickname //fields "nickname"
+                search in "joow/account" query matchQuery("nickname", nickname)
               }.await
               client.close()
               val sh: SearchHits = resp.getHits

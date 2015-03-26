@@ -1,5 +1,6 @@
 package com.joow.route
 
+import com.joow.app.Json4sProtocol
 import com.joow.entity.{Blog, RsHeader, Response}
 import com.joow.service.BlogOperations
 import org.json4s.{DefaultFormats, Formats}

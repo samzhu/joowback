@@ -23,7 +23,8 @@ libraryDependencies ++= {
     "com.typesafe.scala-logging"   %  "scala-logging-slf4j_2.11"    % "2.1.2",
     "ch.qos.logback"               %  "logback-classic"             % "1.1.2",
     "org.scalatest"                %  "scalatest_2.11"              % "2.2.3"   % "test",
-    "org.mockito"                  %  "mockito-all"                 % "1.10.19" % "test"
+    "org.mockito"                  %  "mockito-all"                 % "1.10.19" % "test",
+    "commons-codec"                %  "commons-codec"               % "1.10"
   )
 }
 

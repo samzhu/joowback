@@ -1,9 +1,15 @@
 package com.joow.app
 
 import akka.actor.ActorSystem
-import com.joow.route.{BlogRouting, AccountRouting}
+import com.joow.route.{AuthRouting, BlogRouting, AccountRouting}
+import org.json4s.{DefaultFormats, Formats}
+import spray.httpx.Json4sSupport
 import spray.routing.SimpleRoutingApp
 import spray.http.MediaTypes
+
+object Json4sProtocol extends Json4sSupport {
+  implicit def json4sFormats: Formats = DefaultFormats
+}
 
 /**
  * Created by SAM on 2015/2/27.
@@ -27,7 +33,8 @@ object BackBoot extends App with SimpleRoutingApp {
     } ~
       pathPrefix("api") {
         AccountRouting.route ~
-          BlogRouting.route_create
+          BlogRouting.route_create ~
+          AuthRouting.route_create
       } ~
       path("") {
         compressResponse() {

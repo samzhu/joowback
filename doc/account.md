@@ -19,7 +19,7 @@ Content-Type=application/json
 ### 帳戶相關API
 
 #### 新增
-POST localhost:8080/account
+POST localhost:8080/api/account
 ``` json
 {
   "email": "spike23_4@yahoo.com.tw",
@@ -42,7 +42,7 @@ Respond
 ```
 
 #### 取得
-GET localhost:8080/account/${_id}
+GET localhost:8080/api/account/${_id}
 
 Respond
 ``` json
@@ -62,7 +62,7 @@ Respond
 ```
 
 #### 更新
-PUT localhost:8080/account/${_id}
+PUT localhost:8080/api/account/${_id}
 ``` json
 {
   "email": "spike23_4@yahoo.com.tw",
@@ -85,7 +85,7 @@ Respond
 ```
 
 #### 刪除
-DELETE localhost:8080/account/${_id}
+DELETE localhost:8080/api/account/${_id}
 
 Respond
 ``` json
@@ -98,7 +98,7 @@ Respond
 ```
 
 #### 查詢
-GET localhost:8080/account?nickname=帥
+GET localhost:8080/api/account?nickname=帥
 
 Respond
 ``` json

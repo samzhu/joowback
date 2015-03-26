@@ -4,7 +4,7 @@
 ### 登入授權相關API
 
 #### Login (Add Auth)
-POST localhost:8080/auth
+POST localhost:8080/api/auth
 ``` json
 {
   "email": "ddd@gmail.com",

@@ -6,5 +6,3 @@ package com.joow.entity
 case class Response (header:RsHeader, body:Map[Any,Any])
 
 case class RsHeader (prc:String)
-
-//case class RsBody (map: Map[Any,Any])

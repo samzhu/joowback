@@ -1,5 +1,7 @@
 package com.joow.service
 
+import com.hazelcast.core.IMap
+import com.joow.hazelcast.HzHelper
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.apache.commons.codec.digest.DigestUtils
@@ -49,7 +51,10 @@ trait AuthOperations {
             val validateresult = validatePasswd(passwd, dbpasswd)
             if (validateresult == true) {
               val currentTime = System.currentTimeMillis()
-              promise.success(DigestUtils.sha512Hex(DigestUtils.md5Hex(email + salt + currentTime) + DigestUtils.md5Hex(salt + currentTime)))
+              val tokenStr = DigestUtils.sha512Hex(DigestUtils.md5Hex(email + salt + currentTime) + DigestUtils.md5Hex(salt + currentTime))
+
+
+              promise.success(tokenStr)
             } else {
               promise.failure(new Exception("密碼錯誤"))
             }

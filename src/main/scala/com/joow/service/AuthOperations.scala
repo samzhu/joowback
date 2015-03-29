@@ -1,7 +1,8 @@
 package com.joow.service
 
 import com.hazelcast.core.IMap
-import com.joow.hazelcast.HzHelper
+import com.joow.entity.AccessToken
+import com.joow.hazelcast.{TokenHZOP, HzHelper}
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.apache.commons.codec.digest.DigestUtils
@@ -52,7 +53,7 @@ trait AuthOperations {
             if (validateresult == true) {
               val currentTime = System.currentTimeMillis()
               val tokenStr = DigestUtils.sha512Hex(DigestUtils.md5Hex(email + salt + currentTime) + DigestUtils.md5Hex(salt + currentTime))
-
+              TokenHZOP.saveAccessToken(AccessToken(tokenStr, "", email, "web", ""))
 
               promise.success(tokenStr)
             } else {

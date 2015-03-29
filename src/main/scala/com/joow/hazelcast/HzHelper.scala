@@ -3,10 +3,12 @@ package com.joow.hazelcast
 import com.hazelcast.config.{MapIndexConfig, InMemoryFormat, MapConfig}
 import com.hazelcast.core.IMap
 
+import scala.collection.JavaConverters._
+
 /**
  * Created by SAM on 2015/3/29.
  */
-object HzHelper extends App{
+trait HzHelper extends App{
   import com.hazelcast.config.Config
   import com.hazelcast.core.{Hazelcast, HazelcastInstance}
   var hz:HazelcastInstance = null
@@ -15,20 +17,23 @@ object HzHelper extends App{
 
   val token = hz.getMap[String,Object]("token")
 
-  token.put("","")
+  token.put("zsdd","æˆ‘æ˜¯token")
+  println(token.get("zsdd"))
+
+
 
 
   /**
-   * ªì©l¤Æ
+   *
    */
   def initInstance(): Unit ={
     val config:Config = new Config()
     hz = Hazelcast.newHazelcastInstance(config)
 
-    //±b¸¹ªí®æ³]©w
-    val accountConfig:MapConfig = config.getMapConfig("normalMap");
+    //
+    val accountConfig:MapConfig = config.getMapConfig("account");
     accountConfig.setInMemoryFormat(InMemoryFormat.OBJECT);
-    //°w¹ïemail°µindex
+    //
     accountConfig.addMapIndexConfig(new MapIndexConfig("email", true));
 
   }
@@ -37,13 +42,8 @@ object HzHelper extends App{
     hz
   }
 
-  /**
-   * ¨ú±o¯S©wªí®æ
-   * @param mapName
-   * @return
-   */
-  def getMap(mapName:String): IMap ={
-     val imap = hz.getMap(mapName)
-    imap
+  def getMap(mapName:String): IMap[String,Object] ={
+    hz.getMap[String,Object](mapName)
   }
+
 }

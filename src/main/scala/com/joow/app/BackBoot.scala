@@ -16,10 +16,11 @@ object Json4sProtocol extends Json4sSupport {
 /**
  * Created by SAM on 2015/2/27.
  */
-object BackBoot extends App with SimpleRoutingApp {
+object BackBoot extends App with SimpleRoutingApp with HzHelper{
   implicit val actorSystem = ActorSystem()
-  //初始化資料庫
-  HzHelper.initInstance()
+  //init
+  //HzHelper.initInstance()
+  initInstance()
 
   startServer(interface = "localhost", port = 8080) {
     path("user") {

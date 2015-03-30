@@ -8,7 +8,7 @@ import java.util.SimpleTimeZone;
 public class TimeTest {
     public static void main(String[] args){
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss.SSS'Z'");
         sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
         System.out.println(sdf.format(System.currentTimeMillis()));
 

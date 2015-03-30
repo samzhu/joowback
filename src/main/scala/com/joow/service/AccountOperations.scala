@@ -11,4 +11,9 @@ trait AccountOperations extends AccountHz {
   def createAccount(account: Account): Unit = {
     createAccountToHz(account)
   }
+
+  def modifyAccount(account: Account): Unit ={
+    modifyAccountToHz(account)
+  }
+
 }

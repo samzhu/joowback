@@ -1,46 +1,55 @@
 package com.joow.service
 
-import com.hazelcast.core.IMap
-import com.joow.entity.AccessToken
-import com.joow.hazelcast.{TokenHZOP, HzHelper}
+import com.joow.entity.{Account, AccessToken}
+import com.joow.hazelcast.{AccountHz, TokenHz}
+import com.joow.utils.UtilTime
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.apache.commons.codec.digest.DigestUtils
 import org.elasticsearch.action.search.SearchResponse
 import org.elasticsearch.search.SearchHits
-
 import scala.concurrent.{Future, Promise}
-import scala.util.{Success, Failure}
+
 
 /**
  * Created by SAM on 2015/3/21.
  */
-trait AuthOperations {
+trait AuthOperations extends TokenHz with AccountHz {
   //token的加料，以免太好猜被猜到
-  val salt = "1533149171bf567efe1e9b93cf8980de"
+  val salt = DigestUtils.md5Hex("joow")
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  /**
-   * 取出帳號資料
-   * @param email
-   * @return
-   */
-  def findAccByEmail(email: String): Future[SearchResponse] = {
-    val client = ElasticClient.remote("127.0.0.1", 9300)
-    val resp: Future[SearchResponse] = client.execute {
-      search in "joow/account" query matchQuery("email", email)
+
+  def doLogin(email: String, passwd: String): Future[String] = {
+    val promise = Promise[String]()
+    Future {
+      val account: Account = getAccountByEmail(email)
+      if (account == null) {
+        promise.failure(new Exception("帳號錯誤"))
+      } else {
+        val validateresult = validatePasswd(passwd, account.passwd)
+        if (validateresult == true) {
+          val currentTime = System.currentTimeMillis()
+          val tokenStr = DigestUtils.sha512Hex(DigestUtils.md5Hex(email + salt + currentTime) + DigestUtils.md5Hex(salt + currentTime))
+          saveAccessToken(AccessToken(tokenStr, "", email, "web", UtilTime.getUTCTime()))
+          promise.success(tokenStr)
+        } else {
+          promise.failure(new Exception("密碼錯誤"))
+        }
+      }
     }
-    resp
+    promise.future
   }
 
-  /**
-   * 將資料轉換成Token
-   * @param searchrs
-   * @param passwd
-   * @return String
-   */
-  def getAccessToken(searchrs:Future[SearchResponse], passwd: String): Future[String] = {
+  def getAccountByToken(token: String): Account = {
+    val accessToken: AccessToken = getAccessToken(token)
+    val account: Account = getAccountByEmail(accessToken.email)
+    account
+  }
+
+  /*
+  def getAccessTokenForLogin(email:String, passwd: String): Future[String] = {
     val promise = Promise[String]()
     Future {
       searchrs onComplete {
@@ -53,8 +62,7 @@ trait AuthOperations {
             if (validateresult == true) {
               val currentTime = System.currentTimeMillis()
               val tokenStr = DigestUtils.sha512Hex(DigestUtils.md5Hex(email + salt + currentTime) + DigestUtils.md5Hex(salt + currentTime))
-              TokenHZOP.saveAccessToken(AccessToken(tokenStr, "", email, "web", ""))
-
+              saveAccessToken(AccessToken(tokenStr, "", email, "web", ""))
               promise.success(tokenStr)
             } else {
               promise.failure(new Exception("密碼錯誤"))
@@ -70,12 +78,12 @@ trait AuthOperations {
     }
     promise.future
   }
-
+  */
   /**
    * 驗證密碼是否正確
    * @param inputPasswd
    * @param dbpasswd
-   * @return
+   * @return true 密碼正確
    */
   def validatePasswd(inputPasswd: String, dbpasswd: String): Boolean = {
     var validate: Boolean = false

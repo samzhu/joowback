@@ -95,6 +95,7 @@ object AccountRouting extends SimpleRoutingApp with AccountOperations{
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
               val account = accountObj.extract[Account]
+              modifyAccount(account)
               val client = ElasticClient.remote("127.0.0.1", 9300)
               val resp = client.execute {
                 update id accountid in "joow/account" docAsUpsert(

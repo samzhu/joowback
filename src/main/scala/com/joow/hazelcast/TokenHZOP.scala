@@ -1,12 +1,10 @@
 package com.joow.hazelcast
 
-import com.hazelcast.core.IMap
-
-
 /**
  * Created by samzhu on 2015/3/29.
  */
 object TokenHZOP extends HzHelper{
+  import com.hazelcast.core.IMap
   import com.joow.entity.AccessToken
   val mapName = "token"
 

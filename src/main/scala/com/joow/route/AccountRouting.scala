@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.joow.app.Json4sProtocol
 import com.joow.entity._
+import com.joow.service.AccountOperations
 import com.joow.utils.Print
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
@@ -25,11 +26,7 @@ import org.json4s.jackson.JsonMethods._
 
 import scala.collection.mutable.ListBuffer
 
-
-
-
-
-object AccountRouting extends SimpleRoutingApp {
+object AccountRouting extends SimpleRoutingApp with AccountOperations{
 
   import Json4sProtocol._
 
@@ -51,7 +48,7 @@ object AccountRouting extends SimpleRoutingApp {
             complete {
               val account = accountObj.extract[Account]
               val saveaccount = new Account(account.email, DigestUtils.sha512Hex(account.passwd), account.nickname, account.createDate)
-              println("密碼:"+saveaccount.passwd)
+              createAccount(saveaccount)
               val client = ElasticClient.remote("127.0.0.1", 9300)
               val resp = client.execute {
                 index into "joow/account" doc saveaccount

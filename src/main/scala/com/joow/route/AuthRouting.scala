@@ -14,9 +14,12 @@ import scala.util.{Failure, Success}
  * Created by SAM on 2015/3/21.
  */
 object AuthRouting extends SimpleRoutingApp with AuthOperations {
-
   import Json4sProtocol._
   import scala.concurrent.ExecutionContext.Implicits.global
+
+  lazy val route = {
+    route_create
+  }
 
   val route_create = {
     path("auth") {

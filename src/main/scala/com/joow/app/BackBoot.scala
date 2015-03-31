@@ -16,7 +16,7 @@ object Json4sProtocol extends Json4sSupport {
 /**
  * Created by SAM on 2015/2/27.
  */
-object BackBoot extends App with SimpleRoutingApp with HzHelper{
+object BackBoot extends App with SimpleRoutingApp with HzHelper {
   implicit val actorSystem = ActorSystem()
   //init
   //HzHelper.initInstance()
@@ -37,8 +37,8 @@ object BackBoot extends App with SimpleRoutingApp with HzHelper{
     } ~
       pathPrefix("api") {
         AccountRouting.route ~
-          BlogRouting.route_create ~
-          AuthRouting.route_create
+          AuthRouting.route ~
+          BlogRouting.route
       } ~
       path("") {
         compressResponse() {

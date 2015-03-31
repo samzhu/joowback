@@ -15,16 +15,26 @@ import spray.routing.SimpleRoutingApp
 
 object BlogRouting extends SimpleRoutingApp with BlogOperations{
   import Json4sProtocol._
+  import scala.concurrent.ExecutionContext.Implicits.global
 
+  lazy val route = {
+    route_create
+  }
 
-  val route_create = {
+  /*
+  POST graph.facebook.com
+  /{user-id}/feed?
+    message={message}&
+    access_token={access-token}
+   */
+  private val route_create = {
     path("blog") {
       post {
         entity(as[JObject]) { jsonObj =>
           val blog = jsonObj.extract[Blog]
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
-              create(blog)
+              createBlog("",blog)
 
               val body: Map[Any, Any] = Map("_id" -> blog.title)
               val res = Response(RsHeader("0"), body)

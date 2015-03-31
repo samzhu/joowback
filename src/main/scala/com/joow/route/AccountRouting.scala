@@ -3,20 +3,25 @@ package com.joow.route
 import java.io.StringWriter
 import java.util
 import akka.actor.ActorSystem
+import akka.http.model.StatusCode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.joow.app.Json4sProtocol
 import com.joow.entity._
+import com.joow.route.AuthRouting._
 import com.joow.service.AccountOperations
 import com.joow.utils.Print
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.ElasticDsl.delete
+import com.sksamuel.elastic4s.ElasticDsl.get
+import com.sksamuel.elastic4s.ElasticDsl.put
 import org.apache.commons.codec.digest.DigestUtils
 import org.elasticsearch.action.search.SearchResponse
 import org.elasticsearch.search.{SearchHits, SearchHit}
 import org.elasticsearch.search.internal.InternalSearchHit
 import org.json4s.{Extraction, DefaultFormats, Formats}
-import spray.http.MediaTypes
+import spray.http.{StatusCodes, HttpResponse, MediaTypes}
 import spray.httpx.Json4sSupport
 import spray.routing.{SimpleRoutingApp, HttpService, Directives, Route}
 import org.json4s.JsonAST.JObject
@@ -25,10 +30,12 @@ import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 
 import scala.collection.mutable.ListBuffer
+import scala.util.{Failure, Success}
 
-object AccountRouting extends SimpleRoutingApp with AccountOperations{
+object AccountRouting extends SimpleRoutingApp with AccountOperations {
 
   import Json4sProtocol._
+  import scala.concurrent.ExecutionContext.Implicits.global
 
   // single node
   //var client: ElasticClient = null
@@ -44,19 +51,17 @@ object AccountRouting extends SimpleRoutingApp with AccountOperations{
     path("account") {
       post {
         entity(as[JObject]) { accountObj =>
+          val account = accountObj.extract[Account]
           respondWithMediaType(MediaTypes.`application/json`) {
-            complete {
-              val account = accountObj.extract[Account]
-              val saveaccount = new Account(account.email, DigestUtils.sha512Hex(account.passwd), account.nickname, account.createDate)
-              createAccount(saveaccount)
-              val client = ElasticClient.remote("127.0.0.1", 9300)
-              val resp = client.execute {
-                index into "joow/account" doc saveaccount
-              }.await
-              client.close()
-              val body: Map[Any, Any] = Map("_id" -> resp.getId.toString)
-              val res = Response(RsHeader("0"), body)
-              res
+            //將用戶密碼雜湊處理
+            val saveaccount: Account = account.copy(passwd = DigestUtils.sha512Hex(account.passwd))
+            onComplete(createAccount(saveaccount)) {
+              case Success(value) => {
+                complete(StatusCodes.Created, Map("msg" -> value))
+              }
+              case Failure(ex) => {
+                complete(StatusCodes.InternalServerError, Map("msg" -> ex.getMessage))
+              }
             }
           }
         }
@@ -128,7 +133,7 @@ object AccountRouting extends SimpleRoutingApp with AccountOperations{
             }.await
             client.close()
             val source = resp.getSource
-            val account = Account(source.get("email").toString, "", source.get("nickname").toString, None)
+            val account = Account(Option(""),source.get("email").toString, "", source.get("nickname").toString, None)
             val body: Map[Any, Any] = Map("account" -> account)
             val res = Response(RsHeader("0"), body)
             res
@@ -154,7 +159,7 @@ object AccountRouting extends SimpleRoutingApp with AccountOperations{
               client.close()
               val sh: SearchHits = resp.getHits
               val hits: ListBuffer[Any] = new ListBuffer()
-              resp.getHits.getHits().foreach( u =>
+              resp.getHits.getHits().foreach(u =>
                 hits += Map("_id" -> u.getId, "_score" -> u.getScore, "account" -> Account(u))
               )
               val body: Map[Any, Any] = Map("total" -> sh.getTotalHits, "max_score" -> sh.getMaxScore, "hits" -> hits)

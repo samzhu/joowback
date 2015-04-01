@@ -10,7 +10,7 @@ import com.joow.app.Json4sProtocol
 import com.joow.entity._
 import com.joow.route.AuthRouting._
 import com.joow.service.AccountOperations
-import com.joow.utils.Print
+import com.joow.utils.{UtilTime, Print}
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.ElasticDsl.delete
@@ -41,23 +41,23 @@ object AccountRouting extends SimpleRoutingApp with AccountOperations {
   //var client: ElasticClient = null
 
   lazy val route = {
-    funcreate ~ fundelete ~ funedit ~ funget ~ funquery
+    route_create ~ fundelete ~ funedit ~ funget ~ funquery
   }
 
   /**
    * 新增
    */
-  val funcreate = {
+  private val route_create = {
     path("account") {
       post {
         entity(as[JObject]) { accountObj =>
           val account = accountObj.extract[Account]
           respondWithMediaType(MediaTypes.`application/json`) {
             //將用戶密碼雜湊處理
-            val saveaccount: Account = account.copy(passwd = DigestUtils.sha512Hex(account.passwd))
+            val saveaccount: Account = account.copy(passwd = DigestUtils.sha512Hex(account.passwd), createDate = Option(UtilTime.getUTCTime()))
             onComplete(createAccount(saveaccount)) {
               case Success(value) => {
-                complete(StatusCodes.Created, Map("msg" -> value))
+                complete(StatusCodes.Created, Map("userid" -> value))
               }
               case Failure(ex) => {
                 complete(StatusCodes.InternalServerError, Map("msg" -> ex.getMessage))

@@ -14,7 +14,7 @@ trait TokenHz extends HzHelper {
     getInstance().getMap[String, AccessToken](mapName)
   }
 
-  def saveAccessToken(accessToken: AccessToken): Unit = {
+  protected def saveAccessTokenHz(accessToken: AccessToken): Unit = {
     getTokenMap().put(accessToken.accessToken, accessToken)
   }
 
@@ -23,7 +23,7 @@ trait TokenHz extends HzHelper {
    * @param tokenStr
    * @return
    */
-  protected def getAccessToken(tokenStr: String): AccessToken = {
+  protected def getAccessTokenHz(tokenStr: String): AccessToken = {
     val accessToken: AccessToken = getTokenMap().get(tokenStr)
     accessToken
   }

@@ -1,4 +1,13 @@
 
+更新時間2015/04/01
+以下四支API均有異動,以HTTP Status Code為主要狀態,
+就不再回覆prc
+帳號
+登入
+po文
+搜尋文章
+
+
 API規則如下
 > RESTful URI
 
@@ -36,6 +45,23 @@ DELETE | 404 (Not Found) | 資源不存在
 
 規則如/api/[version]/[resource name]
 [version]：使用”v”開頭，加上正整數
+
+
+
+### Tech
+相關參考技術網站
+
+* [淺談 REST 軟體架構風格] - 如何設計 RESTful Web Service
+* [elasticsearch] - 官方網站
+* [elastic4s] - scala用的elasticsearch客戶端
+
+[淺談 REST 軟體架構風格]:http://blog.toright.com/posts/1399/%E6%B7%BA%E8%AB%87-rest-%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B%E9%A2%A8%E6%A0%BC-part-ii-%E5%A6%82%E4%BD%95%E8%A8%AD%E8%A8%88-restful-web-service.html
+[elasticsearch]:http://www.elasticsearch.org/
+[elastic4s]:https://github.com/sksamuel/elastic4s
+
+### API共通規則
+必須在HTTP Header中加上
+Content-Type=application/json
 
 * [Account API](https://bitbucket.org/joow/joowback/src/25790612db0885f14e6e99f6f3ecd26937124044/doc/account.md?at=master)
 * [Auth API](https://bitbucket.org/joow/joowback/src/0d3d3fbff58cf654bb13d186731f3f76bc898767/doc/auth.md?at=master)

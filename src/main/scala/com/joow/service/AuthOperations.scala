@@ -32,7 +32,7 @@ trait AuthOperations extends TokenHz with AccountHz {
         if (validateresult == true) {
           val currentTime = System.currentTimeMillis()
           val tokenStr = DigestUtils.sha512Hex(DigestUtils.md5Hex(email + salt + currentTime) + DigestUtils.md5Hex(salt + currentTime))
-          saveAccessToken(AccessToken(tokenStr, "", email, "web", UtilTime.getUTCTime()))
+          saveAccessTokenHz(AccessToken(tokenStr, "", email, "web", UtilTime.getUTCTime()))
           promise.success(tokenStr)
         } else {
           promise.failure(new Exception("密碼錯誤"))
@@ -43,7 +43,7 @@ trait AuthOperations extends TokenHz with AccountHz {
   }
 
   def getAccountByToken(token: String): Account = {
-    val accessToken: AccessToken = getAccessToken(token)
+    val accessToken: AccessToken = getAccessTokenHz(token)
     val account: Account = getAccountByEmail(accessToken.email)
     account
   }

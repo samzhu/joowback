@@ -21,8 +21,8 @@ trait AccountOperations extends AccountHz {
     val promise = Promise[String]()
     Future {
       try {
-        createAccountToHz(account)
-        promise.success("Success")
+        val saveaccount = createAccountToHz(account)
+        promise.success(saveaccount.userid.get)
       }
       catch {
         case ex: Exception => promise.failure(new Exception(ex.getMessage))

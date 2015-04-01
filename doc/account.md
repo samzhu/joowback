@@ -1,21 +1,6 @@
 ### Version
 0.0.1
 
-### Tech
-相關參考技術網站
-
-* [淺談 REST 軟體架構風格] - 如何設計 RESTful Web Service
-* [elasticsearch] - 官方網站
-* [elastic4s] - scala用的elasticsearch客戶端
-
-[淺談 REST 軟體架構風格]:http://blog.toright.com/posts/1399/%E6%B7%BA%E8%AB%87-rest-%E8%BB%9F%E9%AB%94%E6%9E%B6%E6%A7%8B%E9%A2%A8%E6%A0%BC-part-ii-%E5%A6%82%E4%BD%95%E8%A8%AD%E8%A8%88-restful-web-service.html
-[elasticsearch]:http://www.elasticsearch.org/
-[elastic4s]:https://github.com/sksamuel/elastic4s
-
-### API共通規則
-必須在HTTP Header中加上
-Content-Type=application/json
-
 ### 帳戶相關API
 
 #### 新增
@@ -23,25 +8,27 @@ POST localhost:8080/api/account
 ``` json
 {
   "email": "spike23_4@yahoo.com.tw",
-  "passwd": "A76423HEBCDD",
-  "nickname": "小朱",
-  "createDate": "20150208T115722.333Z"
+  "passwd": "123456",
+  "nickname": "小朱"
 }
 ```
 
 Respond
+HttpStatusCode 201 Created
 ``` json
 {
-  "header": {
-    "prc": "0"
-  },
-  "body": {
-    "_id": "AUv6aGQQG6Ft_tZGWRKE"
-  }
+  "userid": "1"
 }
 ```
 
-#### 取得
+HttpStatusCode 500 Internal Server Error
+``` json
+{
+  "msg": "帳號已存在"
+}
+```
+
+#### 取得 未修改
 GET localhost:8080/api/account/${_id}
 
 Respond
@@ -61,7 +48,7 @@ Respond
 }
 ```
 
-#### 更新
+#### 更新 未修改
 PUT localhost:8080/api/account/${_id}
 ``` json
 {
@@ -84,7 +71,7 @@ Respond
 }
 ```
 
-#### 刪除
+#### 刪除 未修改
 DELETE localhost:8080/api/account/${_id}
 
 Respond

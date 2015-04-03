@@ -15,7 +15,7 @@ public class TimeTest {
         //System.out.println(sdf.format(System.currentTimeMillis()));
 
         System.out.println(DigestUtils.sha1Hex("fdsf"));
-        System.out.println(DigestUtils.md5Hex("fdsf"));
+        System.out.println(DigestUtils.md5Hex("fdwer3234tertsf"));
 
 
         //Date yourUtcDate = sdf.parse(yourOriginalDate);

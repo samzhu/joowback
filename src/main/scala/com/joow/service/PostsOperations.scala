@@ -20,20 +20,20 @@ trait PostsOperations extends AuthOperations {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  private val type_name = "joow/blog"
+  private val type_name = "joow/posts"
 
   /**
    * create writings
    * @param accessToken
-   * @param blog
+   * @param post
    * @return Future[String] => blogid
    */
-  def createBlog(accessToken: String, blog: Posts): Future[String] = {
+  def createBlog(accessToken: String, post: Posts): Future[String] = {
     val account: Account = getAccountByToken(accessToken)
-    val saveblog = blog.copy(ownerid = account.userid)
+    val savepost = post.copy(ownerid = account.userid)
     val client = ElasticClient.remote("127.0.0.1", 9300)
     val resp: Future[IndexResponse] = client.execute {
-      index into type_name doc saveblog
+      index into type_name doc savepost
     }
     val promise = Promise[String]()
     Future {

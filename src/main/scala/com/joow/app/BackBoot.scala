@@ -3,7 +3,7 @@ package com.joow.app
 import akka.actor.ActorSystem
 import com.joow.hazelcast.HzHelper
 
-import com.joow.route.{AuthRouting, PostsRouting, AccountRouting}
+import com.joow.route.{PhotosRouting, AuthRouting, PostsRouting, AccountRouting}
 import org.json4s.{DefaultFormats, Formats}
 import spray.httpx.Json4sSupport
 import spray.routing.SimpleRoutingApp
@@ -18,8 +18,7 @@ object Json4sProtocol extends Json4sSupport {
  */
 object BackBoot extends App with SimpleRoutingApp with HzHelper {
   implicit val actorSystem = ActorSystem()
-  //init
-  //HzHelper.initInstance()
+
   initInstance()
 
   startServer(interface = "localhost", port = 8080) {
@@ -38,7 +37,8 @@ object BackBoot extends App with SimpleRoutingApp with HzHelper {
       pathPrefix("api") {
         AccountRouting.route ~
           AuthRouting.route ~
-          PostsRouting.route
+          PostsRouting.route ~
+          PhotosRouting.route
       } ~
       path("") {
         compressResponse() {

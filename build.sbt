@@ -38,6 +38,7 @@ libraryDependencies ++= {
 //libraryDependencies += "com.sksamuel.scrimage" %% "scrimage-filters" % "1.4.2"
 
 //toCheck image type
+
 libraryDependencies += "net.sf.jmimemagic" % "jmimemagic" % "0.1.4"
 
 libraryDependencies += "log4j" % "log4j" % "1.2.17"

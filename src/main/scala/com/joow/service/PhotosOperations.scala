@@ -5,6 +5,7 @@ import com.joow.entity.{Location, Photo, Account}
 import com.joow.utils.UtilTime
 import net.sf.jmimemagic.Magic
 import org.apache.commons.codec.binary.Base64
+import org.elasticsearch.action.get.GetResponse
 import org.elasticsearch.action.index.IndexResponse
 import scala.concurrent.{Promise, Future}
 import scala.util.{Failure, Success, Random}
@@ -37,7 +38,23 @@ trait PhotosOperations extends PhotosEs with AuthOperations {
     promise.future
   }
 
-  def getPhoto(access_token: String, photoid: String): Unit = {
+  def getPhoto(access_token: String, photoid: String): Future[Array[Byte]] = {
+
+    val resp:Future[GetResponse] = getPhotoEs(photoid)
+    val promise = Promise[Array[Byte]]()
+    Future {
+      resp onComplete {
+        case Success(result) => {
+          val photo_rawdata: Array[Byte] = Base64.decodeBase64(result.getSourceAsMap.get("rowdata").asInstanceOf[String])
+          promise.success(photo_rawdata)
+        }
+        case Failure(failure) => {
+          promise.failure(failure)
+        }
+      }
+    }
+    promise.future
+
 
   }
 

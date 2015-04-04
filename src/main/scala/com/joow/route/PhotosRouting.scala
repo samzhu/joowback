@@ -61,14 +61,21 @@ object PhotosRouting extends SimpleRoutingApp with PhotosOperations {
   }
 
   private val route_get = {
-    import java.nio.file.{Paths, Files}
     path("photos" / Segment) { photoid: String =>
       get {
         respondWithMediaType(MediaTypes.`image/png`) {
-          println("回覆")
-          val by = Files.readAllBytes(Paths.get("D:/gcm-a-modr.png"))
-          //tmp.getBytes
-          complete(Base64.decodeBase64(""))
+          onComplete(getPhoto("1",photoid)){
+            case Success(value) => {
+              complete(StatusCodes.OK, value)
+            }
+            case Failure(ex) => {
+              complete{
+                import Json4sProtocol._
+                Map("msg" -> ex.getMessage)
+              }
+              //complete(StatusCodes.InternalServerError, Map("msg" -> ex.getMessage))
+            }
+          }
         }
       }
     }

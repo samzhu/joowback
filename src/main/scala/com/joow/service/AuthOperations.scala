@@ -20,7 +20,6 @@ trait AuthOperations extends TokenHz with AccountHz {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-
   def doLogin(email: String, passwd: String): Future[String] = {
     val promise = Promise[String]()
     Future {
@@ -45,6 +44,7 @@ trait AuthOperations extends TokenHz with AccountHz {
   def getAccountByToken(token: String): Account = {
     val accessToken: AccessToken = getAccessTokenHz(token)
     val account: Account = getAccountByEmail(accessToken.email)
+    //val account: Account = Account(Option("1"),"","","",Option(""))
     account
   }
 

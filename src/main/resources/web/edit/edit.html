@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Big5" />
+<title> JOOW </title>
+</head>
+
+<link rel="stylesheet" type="text/css" href="http://localhost:8080/edit/Ghost-Markdown/ghostdown.css" />
+
+<script src= "http://localhost:8080/web/plugin/angular.min.js"></script>
+<script src= "http://localhost:8080/web/init.js"></script>  
+<script type="text/javascript" src="http://localhost:8080/web/plugin/jquery.min.js"></script>
+<script type="text/javascript" src="http://localhost:8080/web/edit/Ghost-Markdown/jquery.ghostdown.js"></script>
+<script type="text/javascript" src="http://localhost:8080/web/edit/Ghost-Markdown/ghostdown.js"></script>
+
+<script type="text/javascript">
+
+function post_add($scope, $http) {
+    $scope.post = function(article) {
+		alert('http://localhost:8080/api/posts?access_token='+localStorage.token);
+        $http({method: 'POST', url: 'http://localhost:8080/api/posts?access_token='+localStorage.token, data: article, headers: {'Content-Type': 'application/json'}}).success(function(gdata){
+			alert("ok");
+        }).error(function (gdata) {
+			alert("no");
+            alert( JSON.stringify(gdata) );
+        });
+    };
+};
+
+</script>
+
+
+<body>
+
+<script type="text/javascript">
+// var editor = new EpicEditor().load();
+</script>
+
+
+<div ng-controller="post_add">
+<form novalidate name="Login" method="post" action="">
+	
+<label>Title</label>
+<input type="text" ng-model="article.title"/>
+<br/>
+<label>Content</label>
+<textarea ng-model="article.content"></textarea>
+<br/>
+<label>Tags</label>
+<input type="text" ng-model="article.tags"/>
+<br/>
+<button class="btn btn-primary" ng-disabled="isUnchanged(article)" ng-click="post(article)">submit</button>
+</form>
+</div>
+
+<a href="http://localhost:8080">首頁</a>
+
+</body>
+
+</html>

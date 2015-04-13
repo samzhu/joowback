@@ -39,7 +39,6 @@ trait PhotosOperations extends PhotosEs with AuthOperations {
   }
 
   def getPhoto(access_token: String, photoid: String): Future[Array[Byte]] = {
-
     val resp:Future[GetResponse] = getPhotoEs(photoid)
     val promise = Promise[Array[Byte]]()
     Future {

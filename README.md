@@ -46,7 +46,8 @@ DELETE | 404 (Not Found) | 資源不存在
 規則如/api/[version]/[resource name]
 [version]：使用”v”開頭，加上正整數
 
-
+再參考一下路由寫法
+http://stackoverflow.com/questions/17519297/mapping-spray-parameters
 
 ### Tech
 相關參考技術網站

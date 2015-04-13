@@ -1,7 +1,7 @@
 package com.joow.route
 
 import com.joow.app.Json4sProtocol
-import com.joow.entity.{Posts, RsHeader, Response}
+import com.joow.entity.Posts
 import com.joow.route.AccountRouting._
 import com.joow.service.PostsOperations
 import org.json4s.{DefaultFormats, Formats}
@@ -38,7 +38,7 @@ object PostsRouting extends SimpleRoutingApp with PostsOperations {
           entity(as[JObject]) { jsonObj =>
             val blog = jsonObj.extract[Posts]
             respondWithMediaType(MediaTypes.`application/json`) {
-              onComplete(createBlog(access_token, blog)) {
+              onComplete(createPost(access_token, blog)) {
                 case Success(value) => {
                   complete(StatusCodes.Created, Map("postid" -> value))
                 }
@@ -58,7 +58,7 @@ object PostsRouting extends SimpleRoutingApp with PostsOperations {
       get {
         parameters('access_token) { (access_token) =>
           respondWithMediaType(MediaTypes.`application/json`) {
-            onComplete(queryBlog(access_token)) {
+            onComplete(queryPosts(access_token)) {
               case Success(value) => {
                 complete(StatusCodes.OK, value)
               }

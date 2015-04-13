@@ -1,13 +1,10 @@
 package com.joow.entity
 
-import java.util
-
 import org.elasticsearch.search.SearchHit
 
 /**
  * Created by SAM on 2015/2/27.
  */
-
 case class Account(userid: Option[String], email: String, passwd: String, nickname: String, createDate: Option[String])
 
 object Account {

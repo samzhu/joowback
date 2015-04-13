@@ -9,6 +9,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.joow.app.Json4sProtocol
 import com.joow.entity._
 import com.joow.route.AuthRouting._
+import com.joow.rqrsdata.{RsHeader, Response}
 import com.joow.service.AccountOperations
 import com.joow.utils.{UtilTime, Print}
 import com.sksamuel.elastic4s.ElasticClient

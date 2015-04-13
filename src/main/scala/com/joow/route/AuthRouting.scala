@@ -1,7 +1,8 @@
 package com.joow.route
 
 import com.joow.app.Json4sProtocol
-import com.joow.entity.{Account, RsHeader, Response}
+import com.joow.entity.Account
+import com.joow.rqrsdata.{RsHeader, Response}
 import com.joow.service._
 import org.json4s.JsonAST.JObject
 import spray.http.{StatusCodes, MediaTypes}

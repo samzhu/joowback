@@ -1,14 +1,17 @@
 package com.joow.service
 
-import com.joow.entity.Account
+import com.joow.elastic.ProfileEs
+import com.joow.entity.{Profile, Account}
 import com.joow.hazelcast.AccountHz
 
+import scala.collection.mutable
 import scala.concurrent.{Future, Promise}
+import scala.util.{Failure, Success}
 
 /**
  * Created by SAM on 2015/3/30.
  */
-trait AccountOperations extends AccountHz {
+trait AccountOperations extends AccountHz with ProfileEs {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -19,12 +22,20 @@ trait AccountOperations extends AccountHz {
    */
   def createAccount(account: Account): Future[String] = {
     val promise = Promise[String]()
+    val saveaccount = createAccountToHz(account)
+    val profile: Profile = Profile(saveaccount.userid.get, saveaccount.nickname, null, mutable.Buffer(), mutable.Buffer())
+    val resp = saveProfileToEs(profile)
     Future {
       try {
-        val saveaccount = createAccountToHz(account)
-        promise.success(saveaccount.userid.get)
-      }
-      catch {
+        resp onComplete {
+          case Success(result) => {
+            promise.success(saveaccount.userid.get)
+          }
+          case Failure(failure) => {
+            promise.failure(failure)
+          }
+        }
+      } catch {
         case ex: Exception => promise.failure(new Exception(ex.getMessage))
       }
     }

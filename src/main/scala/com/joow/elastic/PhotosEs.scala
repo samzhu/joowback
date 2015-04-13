@@ -1,17 +1,13 @@
 package com.joow.elastic
 
-
-import org.elasticsearch.action.get.GetResponse
-import org.elasticsearch.action.search.SearchResponse
-
 import scala.concurrent.Future
 
 /**
  * Created by SAM on 2015/4/3.
  */
 trait PhotosEs {
-
   import com.joow.entity.Photo
+  import org.elasticsearch.action.get.GetResponse
   import org.elasticsearch.action.index.IndexResponse
   import com.sksamuel.elastic4s.ElasticClient
   import com.sksamuel.elastic4s.ElasticDsl._

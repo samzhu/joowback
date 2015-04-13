@@ -11,6 +11,7 @@ import scala.util.{Failure, Success}
   * Created by SAM on 2015/4/3.
   */
 object PhotosRouting extends SimpleRoutingApp with PhotosOperations {
+
   import scala.concurrent.ExecutionContext.Implicits.global
 
   lazy val route = {
@@ -24,20 +25,16 @@ object PhotosRouting extends SimpleRoutingApp with PhotosOperations {
           entity(as[MultipartFormData]) { formdata =>
             onComplete(savePhoto(access_token, formdata.get("photo").get.entity.data.toByteArray, Option(null))) {
               case Success(value) => {
-                complete{
+                complete {
                   import Json4sProtocol._
-
-                  Map("photoid" -> value)
+                  StatusCodes.Created -> Map("photoid" -> value)
                 }
-
-                //complete(StatusCodes.Created, Map("photoid" -> value))
               }
               case Failure(ex) => {
-                complete{
+                complete {
                   import Json4sProtocol._
-                  Map("msg" -> ex.getMessage)
+                  StatusCodes.InternalServerError -> Map("msg" -> ex.getMessage)
                 }
-                //complete(StatusCodes.InternalServerError, Map("msg" -> ex.getMessage))
               }
             }
             //formdata.fields.foreach( bodypart =>
@@ -63,23 +60,22 @@ object PhotosRouting extends SimpleRoutingApp with PhotosOperations {
   private val route_get = {
     path("photos" / Segment) { photoid: String =>
       get {
-        respondWithMediaType(MediaTypes.`image/png`) {
-          onComplete(getPhoto("1",photoid)){
-            case Success(value) => {
-              complete(StatusCodes.OK, value)
-            }
-            case Failure(ex) => {
-              complete{
-                import Json4sProtocol._
-                Map("msg" -> ex.getMessage)
+        parameters('access_token) { access_token =>
+          respondWithMediaType(MediaTypes.`image/png`) {
+            onComplete(getPhoto(access_token, photoid)) {
+              case Success(value) => {
+                complete(StatusCodes.OK, value)
               }
-              //complete(StatusCodes.InternalServerError, Map("msg" -> ex.getMessage))
+              case Failure(ex) => {
+                complete {
+                  import Json4sProtocol._
+                  StatusCodes.InternalServerError -> Map("msg" -> ex.getMessage)
+                }
+              }
             }
           }
         }
       }
     }
   }
-
-
 }

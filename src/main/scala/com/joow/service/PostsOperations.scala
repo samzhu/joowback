@@ -28,7 +28,7 @@ trait PostsOperations extends AuthOperations {
    * @param post
    * @return Future[String] => blogid
    */
-  def createBlog(accessToken: String, post: Posts): Future[String] = {
+  def createPost(accessToken: String, post: Posts): Future[String] = {
     val account: Account = getAccountByToken(accessToken)
     val savepost = post.copy(ownerid = account.userid)
     val client = ElasticClient.remote("127.0.0.1", 9300)
@@ -50,7 +50,7 @@ trait PostsOperations extends AuthOperations {
     promise.future
   }
 
-  def queryBlog(accessToken: String): Future[Map[Any, Any]] = {
+  def queryPosts(accessToken: String): Future[Map[Any, Any]] = {
     val client = ElasticClient.remote("127.0.0.1", 9300)
     val resp: Future[SearchResponse] = client.execute {
       search in type_name

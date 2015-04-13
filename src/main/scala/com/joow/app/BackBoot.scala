@@ -3,7 +3,7 @@ package com.joow.app
 import akka.actor.ActorSystem
 import com.joow.hazelcast.HzHelper
 
-import com.joow.route.{PhotosRouting, AuthRouting, PostsRouting, AccountRouting}
+import com.joow.route._
 import org.json4s.{DefaultFormats, Formats}
 import spray.httpx.Json4sSupport
 import spray.routing.SimpleRoutingApp
@@ -38,7 +38,8 @@ object BackBoot extends App with SimpleRoutingApp with HzHelper {
         AccountRouting.route ~
           AuthRouting.route ~
           PostsRouting.route ~
-          PhotosRouting.route
+          PhotosRouting.route ~
+          ProfileRouting.route
       } ~
       path("") {
         compressResponse() {

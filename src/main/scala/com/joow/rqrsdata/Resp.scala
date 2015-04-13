@@ -1,4 +1,4 @@
-package com.joow.entity
+package com.joow.rqrsdata
 
 /**
  * Created by SAM on 2015/2/27.

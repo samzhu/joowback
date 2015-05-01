@@ -10,4 +10,4 @@ case class Photo(photoid: String,
                   createtime: String,
                   ownerid: String)
 
-case class Location(lat: Double, lon: Double)
+

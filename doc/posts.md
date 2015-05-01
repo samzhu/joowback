@@ -9,7 +9,14 @@ POST localhost:8080/api/posts?access_token={access_token}
 {
   "title": "第一篇",
   "content": "測試測試",
-  "tags":["帥","別羨慕哥"]
+  "tags": [
+    "帥",
+    "別羨慕哥"
+  ],
+  "location": {
+    "lat": 50.05,
+    "lon": 55.06
+  }
 }
 ```
 
@@ -31,7 +38,7 @@ GET localhost:8080/api/posts?access_token={access_token}
   "max_score": 1,
   "hits": [
     {
-      "_id": "AUxz6iEPaVI6PbHipWvC",
+      "_id": "AU0QEdOPoLeM81SbSwcX",
       "_score": 1,
       "post": {
         "title": "第一篇",
@@ -40,6 +47,10 @@ GET localhost:8080/api/posts?access_token={access_token}
           "帥",
           "別羨慕哥"
         ],
+        "location": {
+          "lat": 50.05,
+          "lon": 55.06
+        },
         "ownerid": "1"
       }
     }

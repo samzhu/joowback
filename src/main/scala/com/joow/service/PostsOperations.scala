@@ -30,7 +30,7 @@ trait PostsOperations extends AuthOperations {
    */
   def createPost(accessToken: String, post: Posts): Future[String] = {
     val account: Account = getAccountByToken(accessToken)
-    val savepost = post.copy(ownerid = account.userid)
+    val savepost = post.copy(ownerid = Option(account.userid))
     val client = ElasticClient.remote("127.0.0.1", 9300)
     val resp: Future[IndexResponse] = client.execute {
       index into type_name doc savepost

@@ -22,7 +22,7 @@ trait PhotosOperations extends PhotosEs with AuthOperations {
     val photoid: String = "1" + "_" + Random.nextLong()
     val createtime: String = UtilTime.getUTCTime()
     val mimetype: String = Magic.getMagicMatch(photo_rawdata).getMimeType()
-    val photo: Photo = Photo(photoid, Base64.encodeBase64String(photo_rawdata), mimetype, location, createtime, account.userid.get)
+    val photo: Photo = Photo(photoid, Base64.encodeBase64String(photo_rawdata), mimetype, location, createtime, account.userid)
     val resp: Future[IndexResponse] = savePhotoEs(photo)
     val promise = Promise[String]()
     Future {

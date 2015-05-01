@@ -1,8 +1,11 @@
 package com.joow.service
 
-import com.joow.elastic.ProfileEs
+import com.joow.elastic.{AccountEs, ProfileEs}
 import com.joow.entity.{Profile, Account}
+import com.joow.fromdata.FormCreateAccount
 import com.joow.hazelcast.AccountHz
+import com.joow.utils.UtilTime
+import org.apache.commons.codec.digest.DigestUtils
 
 import scala.collection.mutable
 import scala.concurrent.{Future, Promise}
@@ -11,25 +14,23 @@ import scala.util.{Failure, Success}
 /**
  * Created by SAM on 2015/3/30.
  */
-trait AccountOperations extends AccountHz with ProfileEs {
+trait AccountOperations extends AccountHz with AccountEs with ProfileEs {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  /**
-   * 建立帳號
-   * @param account
-   * @return
-   */
-  def createAccount(account: Account): Future[String] = {
+  def createAccount(formaccount: FormCreateAccount): Future[String] = {
     val promise = Promise[String]()
-    val saveaccount = createAccountToHz(account)
-    val profile: Profile = Profile(saveaccount.userid.get, saveaccount.nickname, null, mutable.Buffer(), mutable.Buffer())
+    //將用戶密碼雜湊處理
+    val saveaccount: Account = createAccountToHz(Account("", formaccount.email, DigestUtils.sha512Hex(formaccount.passwd)))
+    println(saveaccount)
+    saveAccountToEs(saveaccount)
+    val profile: Profile = Profile(saveaccount.userid, formaccount.nickname, null, mutable.Buffer(), mutable.Buffer(), UtilTime.getUTCTime())
     val resp = saveProfileToEs(profile)
     Future {
       try {
         resp onComplete {
           case Success(result) => {
-            promise.success(saveaccount.userid.get)
+            promise.success(saveaccount.userid)
           }
           case Failure(failure) => {
             promise.failure(failure)
@@ -50,7 +51,7 @@ trait AccountOperations extends AccountHz with ProfileEs {
   }
 
   def modifyAccount(account: Account): Unit = {
-    modifyAccountToHz(account)
+    //modifyAccountToHz(account)
   }
 
 }

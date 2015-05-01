@@ -36,9 +36,9 @@ object PostsRouting extends SimpleRoutingApp with PostsOperations {
       post {
         parameters('access_token) { (access_token) =>
           entity(as[JObject]) { jsonObj =>
-            val blog = jsonObj.extract[Posts]
+            val post = jsonObj.extract[Posts]
             respondWithMediaType(MediaTypes.`application/json`) {
-              onComplete(createPost(access_token, blog)) {
+              onComplete(createPost(access_token, post)) {
                 case Success(value) => {
                   complete(StatusCodes.Created, Map("postid" -> value))
                 }

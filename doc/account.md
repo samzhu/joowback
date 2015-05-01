@@ -3,11 +3,11 @@
 
 ### 帳戶相關API
 
-#### 新增
+#### 建立帳號
 POST localhost:8080/api/account
 ``` json
 {
-  "email": "spike23_4@yahoo.com.tw",
+  "email": "sam001@gmail.com",
   "passwd": "123456",
   "nickname": "小朱"
 }

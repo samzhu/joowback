@@ -9,7 +9,7 @@ import scala.collection.mutable.Buffer
  * Bolg Entity
  * Created by SAM on 2015/3/21.
  */
-case class Posts(title: String, content: String, tags: Seq[String], ownerid: Option[String])
+case class Posts(title: String, content: String, tags: Seq[String], location: Option[Location], ownerid: Option[String])
 
 object Posts {
   import scala.collection.JavaConversions._
@@ -19,6 +19,7 @@ object Posts {
       title = map.get("title").asInstanceOf[String],
       content = map.get("content").asInstanceOf[String],
       tags = asScalaBuffer(map.get("tags").asInstanceOf[java.util.ArrayList[String]]),
+      location = Location(map.get("location").asInstanceOf[java.util.HashMap[String,Double]]),
       //tags = map.get("tags").asInstanceOf[java.util.ArrayList[String]].asScala,
       ownerid = Option(map.get("ownerid").asInstanceOf[String])
     ))

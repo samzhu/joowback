@@ -9,7 +9,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.joow.app.Json4sProtocol
 import com.joow.entity._
 import com.joow.route.AuthRouting._
-import com.joow.rqrsdata.{RsHeader, Response}
+import com.joow.fromdata.{FormCreateAccount, RsHeader, Response}
 import com.joow.service.AccountOperations
 import com.joow.utils.{UtilTime, Print}
 import com.sksamuel.elastic4s.ElasticClient
@@ -51,12 +51,10 @@ object AccountRouting extends SimpleRoutingApp with AccountOperations {
   private val route_create = {
     path("account") {
       post {
-        entity(as[JObject]) { accountObj =>
-          val account = accountObj.extract[Account]
+        entity(as[JObject]) { rqobj =>
+          val formaccount: FormCreateAccount = rqobj.extract[FormCreateAccount]
           respondWithMediaType(MediaTypes.`application/json`) {
-            //將用戶密碼雜湊處理
-            val saveaccount: Account = account.copy(passwd = DigestUtils.sha512Hex(account.passwd), createDate = Option(UtilTime.getUTCTime()))
-            onComplete(createAccount(saveaccount)) {
+            onComplete(createAccount(formaccount)) {
               case Success(value) => {
                 complete(StatusCodes.Created, Map("userid" -> value))
               }
@@ -105,8 +103,8 @@ object AccountRouting extends SimpleRoutingApp with AccountOperations {
               val client = ElasticClient.remote("127.0.0.1", 9300)
               val resp = client.execute {
                 update id accountid in "joow/account" docAsUpsert(
-                  "email" -> account.email,
-                  "nickname" -> account.nickname
+                  "email" -> account.email//,
+                  //"nickname" -> account.nickname
                   )
               }.await
               client.close()
@@ -134,7 +132,7 @@ object AccountRouting extends SimpleRoutingApp with AccountOperations {
             }.await
             client.close()
             val source = resp.getSource
-            val account = Account(Option(""),source.get("email").toString, "", source.get("nickname").toString, None)
+            val account = Account("", source.get("email").toString, "")
             val body: Map[Any, Any] = Map("account" -> account)
             val res = Response(RsHeader("0"), body)
             res

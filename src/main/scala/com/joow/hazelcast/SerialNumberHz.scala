@@ -16,10 +16,12 @@ trait SerialNumberHz extends HzHelper {
     val map: IMap[String, BigInt] = getSerialNumberMap()
     var value: BigInt = map.get(mapkey)
     if (value == null) {
-      value = BigInt(0)
+      value = BigInt(1)
+      map.put(mapkey, value)
+    }else{
+      value = value + 1
+      map.replace(mapkey, value)
     }
-    value = value + 1
-    map.replace(mapkey, value)
     value
   }
 }

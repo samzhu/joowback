@@ -8,6 +8,10 @@ scalaVersion := "2.11.5"
 
 scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf-8")
 
+resolvers += "nlpcn" at "http://maven.nlpcn.org/"
+
+resolvers += "ansj" at "http://maven.ansj.org/"
+
 libraryDependencies ++= {
   val sprayV = "1.3.2"
   Seq(
@@ -27,7 +31,9 @@ libraryDependencies ++= {
     "org.scalatest"                 %  "scalatest_2.11"               % "2.2.3"   % "test",
     "org.mockito"                   %  "mockito-all"                  % "1.10.19" % "test",
     "commons-codec"                 %  "commons-codec"                % "1.10",
-    "com.hazelcast"                 %  "hazelcast"                    % "3.4.1"
+    "com.hazelcast"                 %  "hazelcast"                    % "3.4.1",
+    "org.nlpcn"                     %  "nlp-lang"                     % "0.3",
+    "org.ansj"                      %  "ansj_seg"                     % "2.0.8"
   )
 }
 //image op

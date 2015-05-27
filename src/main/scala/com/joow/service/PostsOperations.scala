@@ -50,21 +50,16 @@ trait PostsOperations extends AuthOperations {
     promise.future
   }
 
-  def queryPosts(accessToken: String): Future[Map[Any, Any]] = {
+  def queryPosts(accessToken: String): Future[Map[String, Any]] = {
     val client = ElasticClient.remote("127.0.0.1", 9300)
     val resp: Future[SearchResponse] = client.execute {
       search in type_name
     }
-    val promise = Promise[Map[Any, Any]]()
+    val promise = Promise[Map[String, Any]]()
     Future {
       resp onComplete {
         case Success(result) => {
-          val sh: SearchHits = result.getHits
-          val hits: ListBuffer[Any] = new ListBuffer()
-          result.getHits.getHits().foreach(u =>
-            hits += Map("_id" -> u.getId, "_score" -> u.getScore, "post" -> Posts(u))
-          )
-          val list: Map[Any, Any] = Map("total" -> sh.getTotalHits, "max_score" -> sh.getMaxScore, "hits" -> hits)
+          val list: Map[String, Any] = Posts.fromSearchHit(result.getHits)
           promise.success(list)
         }
         case Failure(failure) => {

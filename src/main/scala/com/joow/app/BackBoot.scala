@@ -39,7 +39,8 @@ object BackBoot extends App with SimpleRoutingApp with HzHelper {
           AuthRouting.route ~
           PostsRouting.route ~
           PhotosRouting.route ~
-          ProfileRouting.route
+          ProfileRouting.route ~
+          PostLikeRouting.route
       } ~
       path("") {
         compressResponse() {

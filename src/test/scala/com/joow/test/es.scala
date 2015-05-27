@@ -5,6 +5,8 @@ import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.elasticsearch.search.SearchHits
 
+import scala.collection.mutable.ListBuffer
+
 /**
  * Created by SAM on 2015/3/8.
  */
@@ -17,7 +19,7 @@ object es {
       //search in "joow/account" query("nickname", "小朱")
 
       //search in "joow/account" query termQuery("nickname" -> "小朱")
-      search in "joow/account" query matchQuery("nickname", "小朱")
+      //search in "joow/account" query matchQuery("nickname", "小朱")
       //search in "joow/account" query nestedQuery("nickname").query(termQuery("account.nickname" -> "帥哥"))
 
       //search in "joow" -> "account" query "小" fields "nickname"
@@ -29,6 +31,19 @@ object es {
         )
       }
       */
+      val keywordhits: ListBuffer[String] = new ListBuffer()
+      keywordhits += "別羨慕哥"
+      keywordhits += "帥"
+      search in "joow/posts" query {
+        bool {
+          should(
+            //term("tags" -> "哥")
+            matchQuery("title", keywordhits) boost 3,
+            matchQuery("content", keywordhits) boost 1,
+            matchQuery("tags", keywordhits) boost 5
+          )
+        }
+      }
     }.await
     client.close()
     println("Hits=" + resp.getHits.getTotalHits)
@@ -37,7 +52,7 @@ object es {
 
 
 
-    println("size="+resp.getHits.getHits.size)
+    println("size=" + resp.getHits.getHits.size)
 
     //println(resp.getHits.getHits()(0))
     //resp.getHits.getHits().foreach( u =>
@@ -50,7 +65,7 @@ object es {
 
     //println(acc.json);
     //resp.getHits.getHits.foreach(u =>
-      //println(u.fields().get("nickname").getValues)
+    //println(u.fields().get("nickname").getValues)
     //)
 
   }
